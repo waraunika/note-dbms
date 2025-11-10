@@ -64,12 +64,105 @@ CHECK (Grade IN ('A', 'B', 'C', 'D','F'))
 ```sql
 StudentName VARCHAR(100) NOT NULL
 ```
+## C. Example:
+```sql
+CREATE TABLE Employees (
+    -- Entity Integrity
+    EmployeeID INT PRIMARY KEY,
+    
+    -- Domain Constraints
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) UNIQUE,
+    Age INT CHECK (Age >= 18 AND Age <= 65),
+    Salary DECIMAL(10,2) CHECK (Salary BETWEEN 30000 AND 150000),
+    DepartmentID INT,
+    Status VARCHAR(20) DEFAULT 'Active' CHECK (Status IN ('Active', 'Inactive', 'Leave')),
+    JoinDate DATE DEFAULT GETDATE(),
+    
+    -- Referential Integrity with Cascading
+    FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+);
+```
+----
 # 4.2 Assertions and Triggering
-
-2. define assertion with its SQL syntax
-3. what is trigger
-4. working of trigger, syntax and example
-5. safe or risky to use triggers
+## A. Assertions
+- Concept:
+	- Declarative conditions that define a state that the entire database must always satisfy.
+	- They are used to enforce complex business rules that span multiple tables or involve aggregate conditions.
+- Characteristics:
+	- Expected to be true at all times.
+	- The DBMS automatically checks them whenever a relevant transaction occurs.
+	- A violation indicates a fundamental data integrity issue.
+- Note: 
+	- While part of SQL standard, assertions are not widely supported by modern database management systems (e.g., not in MySQL or PostgreSQL).
+	- Their functionality is often implemented using triggers.
+- Syntax:
+```sql
+CREATE ASSERTION <assertion_name>
+CHECK (<condition>);
+```
+- `<condition>`: This is a search condition that can involve sub-queries, aggregates, and reference to multiple tables.
+- The entire condition must evaluate to `TRUE` for the assertion to be satisfied.
+- Example: Ensuring total project budget never exceeds allocated amount of department.
+```sql
+CREATE ASSERTION BudgetCheck
+CHECK (
+	(SELECT SUM(budget) FROM Project) <= (SELECT total_budget FROM Department)
+);
+```
+## B. Triggers
+- Concept:
+	- A trigger is a special type of stored procedure that is automatically executed (i.e. "triggered") in response to specific data modification events (`INSERT`, `UPDATE`, `DELETE`) on specified table or view.
+- Purpose:
+	- Used to enforce complex business rules, maintain derived data (audit trails).
+	- To implement referential integrity actions beyond standard cascading and send notifications.
+- Trigger Components:
+	- The core component of a trigger are defined using the `CREATE TRIGGER` statement.
+	- While syntax varies by DBMS, the logical structure is consistent.
+- Syntax Outline:
+```sql
+CREATE TRIGGER <trigger_name>
+{BEFORE | AFTER | INSTEAD OF} {INSERT | UPDATE | DELETE}
+ON <table_name>
+[FOR EACH ROW | FOR EACH STATEMENT]
+[WHEN (<condition>)]
+<trigger_body>;
+```
+- Components:
+	- Timing: `BEFORE | AFTER | INSTEAD OF`
+		- `BEFORE`: Executed before the triggering event. Often used for data validation, modification or to prevent an invalid operation
+		- `AFTER`: Executed after the triggering event. Commonly used for logging, updating summary tables or complex cascading actions
+		- `INSTEAD OF`: Primarily used on views to allow updates to non-updatable views. The trigger code runs instead of the original DML operation.
+	- Granularity: `FOR EACH ROW | FOR EACH STATEMENT`
+		- Row-level Trigger (`FOR EACH ROW`): The trigger body executes once for every affected row.
+		- Statement-level Trigger (`FOR EACH STATEMENT`): The trigger body executes only once for the entire DML statement, regardless of how many rows are affected.
+- Example: trigger for logging any change in salary.
+```sql
+CREATE TRIGGER log_salary_change
+	AFTER UPDATE OF salary ON Employee
+	FOR EACH ROW
+	WHEN (OLD.salary IS DISTINCT FROM NEW.salary)
+	EXECUTE FUNCTION log_salary_audit();
+    
+-- here, we need to create log_salary_audit() as the trigger function
+CREATE OR REPLACE FUNCTION log_salary_audit()
+RETURNS TRIGGER AS $$
+BEGIN
+	INSERT INTO SalaryAudit (empid, old_salary, new_salary, changed_by)
+	VALUES (NEW.empid, OLD.salary, NEW.salary, CURRENT_USER);
+	RETURN NEW; -- for an AFTER trigger, the returned value is usually ignored.
+END;
+$$ LANGUAGE plpgsql;
+```
+## C. Risk of Triggers
+When Triggers are Risky:
+1. Hidden Logic and Complexity: Triggers execute implicitly. A developer performing a simple `UPDATE` might not be aware of a trigger that fires and performs other operations, making debugging difficult
+2. Performance Overload: Poorly designed triggers, especially row-level triggers on tables with high transaction volumes, can significantly slow down DML operations.
+3. Cascading Triggers: A trigger on Table A can update Table B, which has a trigger that updates Table C, which might even update Table A again. This can lead to infinite loops and unpredictable behaviour if not carefully managed.
+4. Maintenance Challenger: The business logic is scattered between application code and database triggers, making the system harder to understand and maintain.
 # 4.3 Functional Dependencies
 
 
