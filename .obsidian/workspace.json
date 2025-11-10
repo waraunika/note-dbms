@@ -1,0 +1,197 @@
+{
+  "main": {
+    "id": "c7550c618c4690e7",
+    "type": "split",
+    "children": [
+      {
+        "id": "092fa828aa7e61ff",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0418fe2018dbe1f9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Chapter 2 Data Models.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Chapter 2 Data Models"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f6e08c3b9c025994",
+    "type": "split",
+    "children": [
+      {
+        "id": "eb6b384baeef1c14",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f65d0202f9807bef",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "33fbae51a787e96f",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "ac93c5f5c29b702d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "276d5c1262042fea",
+    "type": "split",
+    "children": [
+      {
+        "id": "812ddd8c459af57e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "645f25071699aac1",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Welcome.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Welcome"
+            }
+          },
+          {
+            "id": "17301a19271627cd",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Welcome.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Welcome"
+            }
+          },
+          {
+            "id": "c6fced92ddfc898c",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "7103bf246059ea68",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Welcome.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Welcome"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "0418fe2018dbe1f9",
+  "lastOpenFiles": [
+    "Chapter 1 Introduction to DBMS.md",
+    "Chapter 1 Introduction.md",
+    "Welcome.md",
+    "Chapter 9 Advanced Database Concepts.md",
+    "Chapter 8 Crash Recovery.md",
+    "Chapter 7 Transaction processing and Concurrency Control.md",
+    "Chapter 6 File Structure and Hashing.md",
+    "Chapter 5 Query Processing and Optimisation.md",
+    "Chapter 4 Database Constraints and Normalisation.md",
+    "Chapter 3 Relational Languages and Relational Model.md",
+    "Chapter 2 Data Models.md",
+    "initialise.sh",
+    "Images/ch8",
+    "Images/ch7",
+    "Images/ch6",
+    "Images/ch5",
+    "Images/ch4",
+    "Images/ch3",
+    "Images/ch2",
+    "Images/ch1",
+    "Untitled"
+  ]
+}
