@@ -1,5 +1,5 @@
-message1="Ch-2: 2.1 Finished"
-message2="Created note for Physical, Logical and Conceptual Models"
+message1="Ch-2: 2.4 Finished"
+message2="Created note upto Entities"
 
 git add .
 git commit -m "$message1" -m "$message2"

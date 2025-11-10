@@ -78,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "276d5c1262042fea",
@@ -172,8 +171,19 @@
   },
   "active": "0418fe2018dbe1f9",
   "lastOpenFiles": [
-    "push.sh",
+    "Images/ch1/derived_attribute.png",
+    "Images/ch1/c_ellipse.png",
+    "Images/ch3/composite_attribute.png",
+    "Images/ch1/key_attribute.png",
+    "Images/ch1/c_rectangle.png",
+    "Images/ch1/line.png",
+    "Images/ch1/diamond.png",
     "Chapter 1 Introduction to DBMS.md",
+    "Images/ch1/models.png",
+    "Chapter 2 Data Models.md",
+    "Images/ch1/ellipse.png",
+    "Images/ch1/rectangle.png",
+    "push.sh",
     "Chapter 1 Introduction.md",
     "Welcome.md",
     "Chapter 9 Advanced Database Concepts.md",
@@ -183,7 +193,6 @@
     "Chapter 5 Query Processing and Optimisation.md",
     "Chapter 4 Database Constraints and Normalisation.md",
     "Chapter 3 Relational Languages and Relational Model.md",
-    "Chapter 2 Data Models.md",
     "initialise.sh",
     "Images/ch8",
     "Images/ch7",
@@ -192,7 +201,6 @@
     "Images/ch4",
     "Images/ch3",
     "Images/ch2",
-    "Images/ch1",
-    "Untitled"
+    "Images/ch1"
   ]
 }
