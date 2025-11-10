@@ -78,7 +78,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "276d5c1262042fea",
@@ -94,7 +95,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Welcome.md",
+                "file": "Chapter 2 Data Models.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +105,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Welcome"
+              "title": "Backlinks for Chapter 2 Data Models"
             }
           },
           {
@@ -142,20 +143,21 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Welcome.md",
+                "file": "Chapter 2 Data Models.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Welcome"
+              "title": "Outline of Chapter 2 Data Models"
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 300,
+    "width": 240.5,
     "collapsed": true
   },
   "left-ribbon": {
@@ -173,7 +175,7 @@
   "lastOpenFiles": [
     "Images/ch1/derived_attribute.png",
     "Images/ch1/c_ellipse.png",
-    "Images/ch3/composite_attribute.png",
+    "Images/ch1/composite_attribute.png",
     "Images/ch1/key_attribute.png",
     "Images/ch1/c_rectangle.png",
     "Images/ch1/line.png",

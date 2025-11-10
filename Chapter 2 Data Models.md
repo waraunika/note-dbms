@@ -88,6 +88,7 @@
 | Derived Attribute      | ![[derived_attribute.png \| 100]]   |
 | Relationship           | ![[diamond.png \| 100]]             |
 | Link (Cardinality)     | ![[line.png \| 100]]                |
+****
 # 2.3 Entities and Entities Sets
 ## A. Entity
 - An entity is a single, distinguishable object or "thing" from the real world that we want to store data about.
@@ -99,6 +100,7 @@
 - represented by a table.
 - the table's schema (column headers) define the attributes common to all entities in the set.
 - e.g., the `Students` table, which contains all individual student records, is an `entity` set. Every entity (row) in this set shares the same attributes (`StudentID`, `Name`, `DOB`), but each has its own unique values.
+----
 # 2.4 Strong and Weak Entity Sets
 This concept defines whether an entity can be identified on its own or it depends on another entity.
 ## A. Strong Entity Set
@@ -132,18 +134,126 @@ This concept defines whether an entity can be identified on its own or it depend
 | ERD Symbol   | Rectangle                      | Double Rectangle                                         |
 | Relationship | Regular relationship (Diamond) | Identifying relationship (Double Diamond)                |
 | Example      | `Students (StudentsID, ...)`   | `Dependents (EmployeeID (FK), DependentName, ...)`       |
+****
 # 2.5 Attributes and Keys
-
-
-
-1. Define Attributes and explain its type with example.
-2. Define attribute and its types, entity, participation constraint, weak entity set.
-3. How do you represent composite and multivalued attributes of ERD in tables? Explain with example.
-4. What is keys and explain different types of keys.
-5. Explain different keys used in database design.
-6. What is key attribute? List out the types and explain them briefly.
+## A. Attribute:
+- Concept:
+	- An attribute is a characteristic or property that describes an entity.
+	- In the context of database table, an attribute represents a column table.
+- Example:
+	- For a `Student` entity, attributes include `StudentID`, `FirstName`, `LastName`, `DOB`, etc.
+##### Types:
+| SN  | Types of Attribute | Definition                                                                              | Example                               |
+| --- | ------------------ | --------------------------------------------------------------------------------------- | ------------------------------------- |
+| 1   | Simple             | Atomic and cannot be divided into smaller parts.                                        | `StudentID`, `Age`                    |
+| 2   | Composite          | Can be divided into smaller sub-pars, each with its own meaning.                        | `FullName` -> `FirstName`, `LastName` |
+| 3   | Derived            | Its value can be calculated or derived from another attribute.                          | `DOB` -> `Age`                        |
+| 4   | Single-Valued      | Holds a single value for a single entity instance.                                      | `StudentID`, `DOB`                    |
+| 5   | Multi-Valued       | Holds multiple values for a single entity instance.                                     | `PhoneNumbers`, `Emails`              |
+| 6   | Key Attribute      | An attribute used to uniquely identify an entity instance.<br>It forms the primary key. | `StudentID`, `ProductCode`            |
+##### Explanations:
+- Composite vs Multi-valued:
+	- A composite attribute is about structure: one value, made of parts.
+	- multi-valued attribute is about cardinality: one entity has many values for that attribute.
+- Null Attribute:
+	- Not a formal type.
+	- Any attribute that isn't mandatory can have a `NULL` value
+	- e.g., `MiddleName`
+## B. Keys
+- Key is an attribute (or a set of attributes) used to uniquely identify and relate records in a database table.
+- fundamental to data integrity and establishing relationships
+- Types:
+	- Super Key:
+		- A set of one or more attributes that can uniquely identify a record
+		- it may have extra attributes that are not necessary for unique identification
+		- e.g., a `Students` table super keys could be: `{StudentID}`, `{StudentID, FirstName}`, `{FirstName, LastName, DOB}`.
+	- Candidate Key:
+		- A minimal super key without any unnecessary attributes.
+		- A table could have multiple candidate keys.
+		- Must be unique and non-redundant
+		- From above, the candidate keys are: `{StudentID}`, `{FirstName, LastName, DOB}` (assuming it is truly minimal and unique).
+	- Primary Key:
+		- The chosen candidate key that the database designer selects to be the main unique identifier for the table.
+		- cannot be null and must be unique.
+		- e.g., `{Student Key}`.
+	- Alternate Key:
+		- The candidate keys that were not chosen to be the primary key.
+		- e.g., `{FirstName, LastName, DOB}`
+	- Foreign Key
+		- An attribute (or set of attributes) in one table that reference the primary key of another table.
+		- used to create a link between two tables and enforce referential integrity.
+		- e.g., an `Enrollments` table has a `StudentID` column which is a Foreign Key referencing the `StudentID` (Primary Key) in the `Students` table.
+	- Composite Key
+		- a key that consists of more than one attribute.
+		- this can be a composite primary key, composite candidate key, etc.
+		- e.g., In an `Enrollments` table,  a single attribute cannot uniquely identify a record (a student enrolls in many courses). The combination of `{StudentID, CourseID}` can be used as Composite Primary Key.
+## C. Miscellaneous
+#### C.1 Represent composite and multi-valued attributes in a table
+1. Composite Attribute: Flatten it. Create a separate column in the table for each of its sub-parts
+	- ERD: `Employee` with attribute `Name(FirstName, LastName)`
+	- Table: `Employees(EmpID, FirstName, LastName, ...)`
+2. Multi-valued Attribute: Create a new table. This table will have a foreign key referencing the parent entity's primary key and a column for the multi-valued attribute
+	- ERD: `Employee` with multi-valued attribute `PhoneNumbers`
+	- Tables:
+		- `Employees(EmpID (PK), Name, ...)`
+		- `EmployeePhones(EmpID (FK), PhoneNumber)` - this is weak entity set
+----
 # 2.6 E-R Diagram
-1. differentiate between degree with cardinality of a relationship in an ER diagram
-2. Explain briefly about generalisation in context to ER diagram with an example
-3. Define discriminator in ER Diagram
+- ER Diagram is a graphical representation of the entities, attributes, and relationships within a database
+- visual tool used in database design to model the structure of a database system
+- based on E-R Model
+- main components are: entities, attributes, relationships and cardinality.
+## A. Degree and Cardinality of a Relationship
+| Aspect     | Degree                                                                                                                                                                               | Cardinality                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| Definition | The number of entity sets that participate in a relationship                                                                                                                         | Number of instances of one entity that can be associated with instances of the related entity |
+| It Answers | "How many different types of entities are connected?"                                                                                                                                | "How many of one entity can link to how many of the other?"                                   |
+| Focus      | On the structure of the relationship                                                                                                                                                 | On the business rules and quantitative ratio of the relationship                              |
+| Types      | - Unary (1$^{st}$ degree): relationship with 1 entity<br>- Binary (2$^{nd}$ degree): relationship between 2 entities<br>- Ternary (3$^{rd}$ degree): relationship between 3 entities | - One-to-one (1:1)<br>- One-to-many (1:N)<br>- Many-to-one (N:1)<br>- Many-to-many (M:N)      |
+## B. Generalisation
+- Concept:
+	- bottom-up process in which multiple lower-level entity sets (sub-classes) are combined based on their common features to form a single higher-level entity set (a super-class).
+	- it highlights an "is-a" relationship.
+- Purpose:
+	- To minimise redundancy by abstracting shared attributes and relationships into a more general entity.
+	- the super-class contains common features while sub-classes contain unique feature.
+- Notation:
+	- a triangle symbol connects the super-class to the sub-classes.
+- Example:
+	- In a university database, we might have `Student` and `Professor` entities.
+	- Both share common attributes like `PersonId`, `Name` and `Email`.
+	- Through generalisation, we create a super-class `Person` to hold these common attributes.
+	- the `Student` and `Professor` sub-classes inherit from `Person` and add their specific attributes, e.g., `Major`, `GPA`, `Department`, `Salary`, etc.
+``` .txt
+Student (▭)  -----|
+                  |---- △ ---- Person
+Professor (▭) ----|
+```
+## C. Discriminator
+- Concept:
+	- an attribute (or set of attributes) in a weak entity set that, when combined with the primary key of its owner, strong entity, uniquely identifies a weak entity instance.
+- Purpose:
+	- to serve as the partial key for a weak entity.
+	- since a weak entity does not have a primary key of its own, the discriminator provides the final piece of unique identification.
+----
 # 2.7 Alternate Data Model (hierarchical, network, graph)
+## A. Hierarchical Model
+- Structure: organised in a tree-like structure with a single root. Each parent record can have multiple children, but each child has only one parent (1:N relationships)
+- Data Access: Uses pointers to navigate from parent to child records. Accessing data often requires traversing from the root
+- Strength: Simple and fast for data that naturally fits a hierarchy (e.g., a file system)
+- Weakness: **inflexible**: representing complex many-to-many (M:N) relationships is awkward and leads to data redundancy
+- Best for: early mainframe systems, suited  for well-defined static hierarchies
+## B. Network Model
+- Structure: an enhancement of the hierarchical model, forming a graph where a record can have multiple parents. This allows for M:N relationships
+- Data Access: Also uses pointers (physical address links) to connect records. The paths between records are defined as "sets".
+- Strength: More flexible than the hierarchical model. Efficient for complex queries with pre-defined access paths
+- Weakness: **Extremely complex**: database structure is rigid; modifying schema requires major effort
+- Best for: Complex, pre-defined relationships like telecommunications and banking
+## C. Graph Model
+- Structure: The most flexible, consisting of **nodes** (vertices), **relationships** (edges) and **properties**. Directly mirrors graph theory.
+- Data Access: Relationships are first-class citizens, stored natively. Uses graph traversal and pattern-matching queries.
+- Strength: Excellent for **interconnected data**. Highly agile and intuitive for modelling complex relationships
+- Weakness: Can be less efficient for traditional, row-based aggregate operations common in business reporting
+- Best for: Social networks, fraud detection, knowledge graphs and any domain where relationships are as important as the data itself.
+
+[[Chapter 3 Relational Languages and Relational Model]]
