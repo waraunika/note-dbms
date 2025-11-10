@@ -163,16 +163,83 @@ When Triggers are Risky:
 2. Performance Overload: Poorly designed triggers, especially row-level triggers on tables with high transaction volumes, can significantly slow down DML operations.
 3. Cascading Triggers: A trigger on Table A can update Table B, which has a trigger that updates Table C, which might even update Table A again. This can lead to infinite loops and unpredictable behaviour if not carefully managed.
 4. Maintenance Challenger: The business logic is scattered between application code and database triggers, making the system harder to understand and maintain.
+----
 # 4.3 Functional Dependencies
-
-
-
-1. define functional dependence
-2. What is decomposition
-3. desirable properties of decomposition
-4. partial dependency definition
-5. transitive functional dependency definition + example
-6. what is closure of functional dependency + example
+### A. Concept
+- A constraint that describes a relationship between attributes in a relation.
+- It exists when the value of one set of attributes (the determinant) uniquely determines the values of another set of attributes (the dependent)
+- Notation: X -> Y
+	- X is the determinant
+	- Y is the dependent
+	- Read as: "X functionally determines Y" or "Y is functionally dependent on X"
+### B. Rules for Finding them
+- A Functional Dependency X -> Y holds in a relation if, for every unique combination of values in X, there is exactly one corresponding value in Y.
+- i.e., cannot have two rows with the same X value but different Y values.
+- Example: `Employees (EID, Name, Department, Salary`
+	- Valid FD: `EID` -> `Name`
+		- Each employee ID is associated with exactly one name.
+	- Valid FD: `EID` -> `{Name, Department, Salary}`
+		- the `EID` uniquely identifies the entire tuple.
+	- Invalid FD: `Department` -> `Salary`
+		- multiple employees in the same department can have different salaries
+	- Invalid FD: `Name` -> `EID`
+		- two employees can share a name, but not ID
+### C. Benefits of Functional Dependency
+- Data Integrity: ensures consistency by preventing the storage of contradictory data.
+- Data Redundancy Reduction: By identifying dependencies, we can decompose tables to avoid storing the same information multiple times.
+- Normalisation Foundation: FD is the fundamental tool for database normalisation, which is the process of organising tables to minimise redundancy and avoid data anomalies
+### D. Armstrong's Axioms
+Set of rules used to infer all the functional dependencies logically implied by a set of given FD's.
+1. Reflexivity Rule:
+	- If Y is a subset of X, then X -> Y
+	- e.g., `{EID, Name}` -> `Name` is always true. 
+2. Augmentation Rule:
+	- If X -> Y is a valid FD, then XZ -> YZ is also valid.
+	- e.g., `EID` -> `Name`, then `{EID, Department}` -> `{Name, Department}`.
+3. Transitivity Rule
+	- If X -> Y and Y -> Z are both valid FD's then X -> Z is also valid.
+	- e.g., If `EID` -> Department and `Department` -> `Manager`, then `EID` -> `Manager`.
+Additional Derived Rules:
+- Union: If X -> Y and X -> Z, then X -> `YZ`.
+- Decomposition: If X -> `YZ`, then X -> Y and X -> Z.
+- Pseudo-transitivity: If X -> Y and `YW` -> Z, then `XW` -> Z.
+### E. Types
+1. Trivial Functional Dependency
+	- An FD X -> Y, if Y is a subset of X.
+	- holds for every possible relation instance, and does not represent a meaningful constraint.
+	- e.g., `{EID, Name}` -> `Name`.
+2. Non-Trivial Functional Dependency
+	- An FD X -> Y, if Y is not subset of X.
+	- represent genuine constraints on the data.
+	- e.g., `EID` -> `Name`
+3. Fully Functional Dependency
+	- An FD X -> Y, if Y is fully functionally dependent on X and not dependent on any proper subset of X.
+	- this is critical for defining candidate keys.
+	- e.g., for `Enrollment(StudentID, CourseID, Grade)`, the primary key is `{StudentID, CourseID`. `{StudentID, CourseID}` -> `Grade` is a fully functional dependency as grade needs to be determined by both the ID's.
+4. Partial Functional Dependency
+	- An FD X -> Y, if Y is a partially dependent on X if it is functionally dependent on a proper subset of X.
+	- indicates a normalisation problem (the relation is not in 2NF).
+	- e.g., for `Enrollment(StudentID, CourseID, StudentName)`, `{StudentID, CourseID}`   -> `StudentName` holds true.
+5. Transitive Functional Dependency
+	- An FD X -> Z, if X -> Y and Y -> Z and Y does not determine X.
+	- indicates a normalisation problem (the relation is not in 3NF).
+	- Consider `Employee(EID, Department, DeptManager)`
+		- `EID` -> `Department`
+		- `Department` -> `DepartManager` (and `Department` does not determine `EID`)
+		- Therefore `EID` -> `DeptManager`
+### F. Closure of Functional Dependencies
+- The closure of a set of functional dependencies `F` denotes as F$^+$ is the set of all functional dependencies that can be logically inferred from `F` using Armstrong's Axioms.
+- Example:
+	- Given: a relation `R(A, B, C, D, E)` and the set of FD's as:
+	- `F` = {`A` -> `BC`, `CD` -> `E`, `B` -> `D`, `E` -> `A`}
+	- To find, the closure of `{A, B}` i.e. {A, B}$^+$:
+	- Start: result = {A, B}
+	- Use `A` -> `BC`, so: result = {A, B, C}
+	- Use `B` -> `D`, so: result = {A, B, C, D}
+	- Use `CD` -> `E`, so: result = {A, B, C, D, E}
+	- Use `E` -> `A`, so result = {A, B, C, D, E}
+	- We have exhausted all FD's. and final result includes all attributes.
+	- Hence, {A, B}  is a super key for R
 # 4.4 Multi-valued and Joined Dependencies
 
 
