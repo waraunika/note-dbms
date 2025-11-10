@@ -1,9 +1,44 @@
-1. What are data models
-2. explain various types of data models
-3. Explain the relational model of database system along with foreign key constraint with appropriate example
-4. Explain how network data model is different from relation data model
+- A Data Model is a collection of conceptual tools for describing:
+	- the structure of data (entities, attributes, relationships).
+	- the operations that can be performed on the data.
+	- the constraints that the data must follow.
+- It is the architectural blueprint for a database
+- It provides a standardised way to design, communicate and implement how information is organised and connected
 # 2.1 Logical, Physical and Conceptual
-
+- To manage complexity, three distinct models, reach representing a different level of abstraction, are created
+# A. Conceptual Model:
+- Concept:
+	- high level, business oriented view.
+	- describes what information the system needs to store
+	- it ignores how it will be implemented
+	- the "what"-model
+- Purpose:
+	- to capture the essential data rules and concepts from the user's perspective.
+	- used to communicate between clients and analysts and database engineer.
+- Example:
+	- defining Entities as: `Student`, `Course`, `Professor` and 
+	- Relationships as: A `Professor` teaches a `Course` to a `Student`
+## B. Logical Model:
+- Concept:
+	- translates the conceptual model into a specific, implementation-ready structure without being tied to a particular database technology.
+	- defines how the data will be logically organised.
+- Purpose:
+	- To create a detailed blueprint of the database.
+	- specifies tables, columns, data types, keys and relationships.
+	- often following a specific data model like Relational Model.
+- Example:
+	- defining Table `Students`.
+	- with attributes (columns): `StudentID` (`INT`, `Primary Key`), `FirstName` (`VARCHAR`), `LastName` (`VARCHAR`).
+	- and similar for Courses as `CourseCode` and `Title`.
+## C. Physical Model:
+- Concept:
+	- describes the actual implementation on the storage system.
+	- deals with the technical details of where and how the data is physically stored and accessed for optimal performance
+- Purpose:
+	- To optimise the database for specific performance, storage, and security requirements of a chosen Database Management System (DBMS) like MySQL or Oracle.
+- Example:
+	- Create a `B-tree index` on the `LastName` Column in the `Students` table for fast searching
+	- Store the `Courses` table on a specific, high-speed disk drive.
 # 2.2 E-R Model
 1. Define unary relationship along with example
 2. How do you convert an ER relationship into relation schema? Explain with examples of different cardinalities.
