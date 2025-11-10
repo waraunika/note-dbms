@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Chapter 3 Relational Languages and Relational Model.md",
+                "file": "Chapter 4 Database Constraints and Normalisation.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Chapter 3 Relational Languages and Relational Model"
+              "title": "Chapter 4 Database Constraints and Normalisation"
             }
           }
         ]
@@ -173,9 +173,9 @@
   },
   "active": "0418fe2018dbe1f9",
   "lastOpenFiles": [
+    "Chapter 3 Relational Languages and Relational Model.md",
     "Images/ch3/joins.png",
     "Images/ch3/joins.tmp.png",
-    "Chapter 3 Relational Languages and Relational Model.md",
     "Chapter 4 Database Constraints and Normalisation.md",
     "Chapter 2 Data Models.md",
     "Images/ch1/derived_attribute.png",
@@ -187,7 +187,6 @@
     "Images/ch1/diamond.png",
     "Chapter 1 Introduction to DBMS.md",
     "Images/ch1/models.png",
-    "Images/ch1/ellipse.png",
     "push.sh",
     "Chapter 1 Introduction.md",
     "Welcome.md",
