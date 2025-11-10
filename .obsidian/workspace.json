@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Chapter 2 Data Models.md",
+                "file": "Chapter 3 Relational Languages and Relational Model.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Chapter 2 Data Models"
+              "title": "Chapter 3 Relational Languages and Relational Model"
             }
           }
         ]
@@ -143,13 +143,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Chapter 2 Data Models.md",
+                "file": "Chapter 3 Relational Languages and Relational Model.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Chapter 2 Data Models"
+              "title": "Outline of Chapter 3 Relational Languages and Relational Model"
             }
           }
         ],
@@ -173,6 +173,11 @@
   },
   "active": "0418fe2018dbe1f9",
   "lastOpenFiles": [
+    "Images/ch3/joins.png",
+    "Images/ch3/joins.tmp.png",
+    "Chapter 3 Relational Languages and Relational Model.md",
+    "Chapter 4 Database Constraints and Normalisation.md",
+    "Chapter 2 Data Models.md",
     "Images/ch1/derived_attribute.png",
     "Images/ch1/c_ellipse.png",
     "Images/ch1/composite_attribute.png",
@@ -182,9 +187,7 @@
     "Images/ch1/diamond.png",
     "Chapter 1 Introduction to DBMS.md",
     "Images/ch1/models.png",
-    "Chapter 2 Data Models.md",
     "Images/ch1/ellipse.png",
-    "Images/ch1/rectangle.png",
     "push.sh",
     "Chapter 1 Introduction.md",
     "Welcome.md",
@@ -193,8 +196,6 @@
     "Chapter 7 Transaction processing and Concurrency Control.md",
     "Chapter 6 File Structure and Hashing.md",
     "Chapter 5 Query Processing and Optimisation.md",
-    "Chapter 4 Database Constraints and Normalisation.md",
-    "Chapter 3 Relational Languages and Relational Model.md",
     "initialise.sh",
     "Images/ch8",
     "Images/ch7",
