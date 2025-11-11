@@ -241,13 +241,63 @@ Additional Derived Rules:
 	- We have exhausted all FD's. and final result includes all attributes.
 	- Hence, {A, B}  is a super key for R
 # 4.4 Multi-valued and Joined Dependencies
-
-
-1. lossless decomposition and dependency preservation definitions
-2. lossless join decomposition definition
-3. Explain the conditions to be satisfied for lossless decomposition using FD sets
-4. define multi-valued dependency
-5. Differentiate primary key and foreign key
-6. Explain trivial and non-trivial dependencies. Explain BCNF
-7. Explain the necessary condition for decomposing a relational database table into two tables.
+## A. Multi-valued Dependency (MVD)
+#### A.1 Concept:
+- exists when a single value of determinant (X), there are multiple sets of values for two other attributes (Y and Z), and these sets are independent of each other.
+- Notation: X ->> Y, read as "X multi-determines Y".
+- Formal Definition: An MVD X ->>Y holds in a relation R, if for any two tuples t1 and t2 in R that have the same value for X (`t1[X] = t2[X]`), there must exist two other tuples `t3` and `t4` such that:
+	- `t3[X] = t4[X] = t1[X] = t2[X]`
+	- `t3[Y] = t1[Y]` and `t3[Z] = t2[Z]`
+	- `t4[Y] = t2[Y]` and `t4[Z] = t1[Z]`
+	- where Z represents all attributes in R not in X or Y
+- MVD represents a situation where two independent multi-valued facts are associated with a single entity.
+#### A.2 Example:
+| Student | Project    | Hobby    |
+| ------- | ---------- | -------- |
+| Alice   | Database   | Chess    |
+| Alice   | Database   | Painting |
+| Alice   | Web Design | Chess    |
+| Alice   | Web Design | Painting |
+- Explanation:
+	- MVD's: `Student` ->> `Project` and `Student` ->> `Hobby`.
+	- A student works on multiple project and has multiple hobbies.
+	- The projects a student works on are independent of the hobbies they have.
+	- The table must contain all possible combinations of a student's projects and hobbies to correctly represent this independence.
+	- If it didn't (e.g., the combination `(Alice, Web Design, Painting)` was missing), it would incorrectly imply a relationship between the specific project and hobby.
+- Note:
+	- Every FD is also a MVD. If X -> Y, then X ->> Y automatically holds
+## B. Join Dependency
+- Concept:
+	- A JD exists when a relation can be recreated without loss of information by joining several of its projections (sub-relations).
+	- it is a generalisation of MVD.
+- A relation `R` with attributes `(A, B, C, D)` satisfies the join dependency `*(R1, R2, ..., Rn)` if `R` is equal to the natural join of its projects `R1, R2, R3, ..., Rn`.
+#### B.1 Lossless Join Dependency
+- A decomposition of a relation `R` into a set of relations `{R1, R2, ..., Rn}` is a lossless join decomposition if the natural join of `R1, R2, ..., Rn` produces the exact original relation R.
+- No false/fake tuples are generated, and no original tuples are lost.
+- it is a fundamental requirement for any database decomposition.
+- it is the only way to recover original information from multiple relations.
+##### B.1.a Example:
+- Consider relation `Employee(EmpID, Name, DeptID, DeptName` with FD: `DeptId` -> `DeptName`
+- This relation suffers from update anomalies due to the FD. We can losslessly decompose it into:
+	- `R1(EmpID, Name, DeptId`
+	- `R2(DeptID, DeptName)`
+- The natural join between `R1` and `R2` will perfectly reconstruct the original `Employee` relation without any fake tuples. This is a lossless join.
+##### B.1.b Conditions for Lossless Join Decomposition
+- For a decomposition of `R` into `R1` and `R2` to be lossless, the intersection of `R1` and `R2` must be a super key for atleast one of the decomposed relations (`R1` or `R2`)
+- Formal Condition:
+	- The decomposition `{R1, R2}` is a lossless join decomposition if at least one of the following functional dependencies holds in the closure F$^+$ of the FD set F:
+		- $(R1\ \cap\ R2)$ -> $(R1 - R2)$, or
+		- $(R1\ \cap\ R2)$ -> $(R2 - R1)$.
+	- In simpler terms, the common attributes must functionally determine all the attributes of atleast one of the tables involved in the decomposition.
+#### B.2 Lossy Join Dependency
+- A decomposition is lossy if the natural join of the resulting relations produce extra, fake tuples that were not in the original relation, or fails to recreate original tuples.
+- A lossy join leads to incorrect and misleading query results, as it creates information that never existed.
+#####  Example:
+- Consider the same relation `Employee(EmpID, Name, DeptID, DeptName` but decomposed incorrectly as:
+	- `R1(EmpID, Name)`
+	- `R2(DeptID, DeptName)`
+- The natural join of `R1` and `R2` is a Cartesian product because there is no common attribute to join on.
+- It will pair every employee with every department creating a huge number of fake and incorrect tuples.
+- This is a lossy join.
 # 4.5 Different Normal Forms
+
