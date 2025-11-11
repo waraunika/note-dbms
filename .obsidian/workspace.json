@@ -78,7 +78,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "276d5c1262042fea",
@@ -142,13 +143,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Chapter 3 Relational Languages and Relational Model.md",
+                "file": "Chapter 5 Query Processing and Optimisation.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Chapter 3 Relational Languages and Relational Model"
+              "title": "Outline of Chapter 5 Query Processing and Optimisation"
             }
           }
         ],
