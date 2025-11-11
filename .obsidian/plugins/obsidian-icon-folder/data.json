@@ -6,6 +6,7 @@
     "emojiStyle": "native",
     "iconColor": null,
     "recentlyUsedIcons": [
+      "5️⃣",
       "4️⃣",
       "3️⃣",
       "2️⃣",
@@ -36,5 +37,6 @@
   "Chapter 1 Introduction to DBMS.md": "1️⃣",
   "Chapter 2 Data Models.md": "2️⃣",
   "Chapter 3 Relational Languages and Relational Model.md": "3️⃣",
-  "Chapter 4 Database Constraints and Normalisation.md": "4️⃣"
+  "Chapter 4 Database Constraints and Normalisation.md": "4️⃣",
+  "Chapter 5 Query Processing and Optimisation.md": "5️⃣"
 }
