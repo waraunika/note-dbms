@@ -149,7 +149,22 @@
 ### G. RAID 60 (6 + 0)
 - Combines RAID 6 and RAID 0.
 - Data is stripped across RAID 6 arrays
+----
 # 6.3 Remote Backup System
+- A remote backup system is a method of storing data copies offsite, ensuring that data can be recovered in case of local failures, disasters or other unforeseen events.
+- This system involves transmitting data to a remote server or cloud-based storage solution over a network, providing an extra layer of security and redundancy.
+- Characteristics:
+	- Offsite Storage: Data is stored at a geographically different location from the primary data source, protecting it from local disasters.
+	- Automated Processes: Backups are often automated, reducing the risk of human error and ensuring regular updates.
+	- Accessibility: Easy to scale storage capacity according to needs, especially with cloud-based solutions
+- Types:
+	- Cloud-Based Backup: Data is backed up to cloud storage services provided by companies like AWS, Google Cloud, Microsoft Azure.
+	- Managed Backup Services: Third-party providers manage the backup process, including setup, monitoring and maintenance.
+	- Remote Server Backup: Data is backed up to a dedicated remote server or data centre owned by the organisation or a third-party provider.
+	- Hybrid Backup: combines local and remote backups to provide quick recovery from local backups while ensuring offsite protection.
+- Figure:
+  ![[Remote_backup.png | 600]]
 # 6.4 Hashing Concepts
+- Technique used 
 # 6.5 Order Indices
 # 6.6 B+ Tree index

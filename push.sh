@@ -1,5 +1,5 @@
-message1="Ch-6: 6.2 Completed"
-message2="Completed notes of RAID"
+message1="Ch-6: 6.3 Completed"
+message2="Completed notes of Remote Backup"
 
 git add .
 git commit -m "$message1" -m "$message2"

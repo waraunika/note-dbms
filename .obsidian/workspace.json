@@ -78,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "276d5c1262042fea",
@@ -173,6 +172,7 @@
   },
   "active": "0418fe2018dbe1f9",
   "lastOpenFiles": [
+    "Images/ch6/Remote_backup.png",
     "Chapter 5 Query Processing and Optimisation.md",
     "Chapter 4 Database Constraints and Normalisation.md",
     "Chapter 3 Relational Languages and Relational Model.md",
