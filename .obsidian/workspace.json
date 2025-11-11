@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Chapter 6 File Structure and Hashing.md",
+                "file": "Chapter 7 Transaction processing and Concurrency Control.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Chapter 6 File Structure and Hashing"
+              "title": "Chapter 7 Transaction processing and Concurrency Control"
             }
           }
         ]
@@ -143,13 +143,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Chapter 6 File Structure and Hashing.md",
+                "file": "Chapter 7 Transaction processing and Concurrency Control.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Chapter 6 File Structure and Hashing"
+              "title": "Outline of Chapter 7 Transaction processing and Concurrency Control"
             }
           }
         ],
@@ -173,6 +173,7 @@
   },
   "active": "0418fe2018dbe1f9",
   "lastOpenFiles": [
+    "Chapter 6 File Structure and Hashing.md",
     "Images/ch6/example_secondary.png",
     "Images/ch6/example_sparse.png",
     "Images/ch6/example_dense.png",
@@ -188,14 +189,12 @@
     "Images/ch1/derived_attribute.png",
     "Images/ch1/c_ellipse.png",
     "Images/ch1/composite_attribute.png",
-    "Images/ch1/key_attribute.png",
     "push.sh",
     "Chapter 1 Introduction.md",
     "Welcome.md",
     "Chapter 9 Advanced Database Concepts.md",
     "Chapter 8 Crash Recovery.md",
     "Chapter 7 Transaction processing and Concurrency Control.md",
-    "Chapter 6 File Structure and Hashing.md",
     "initialise.sh",
     "Images/ch8",
     "Images/ch7",

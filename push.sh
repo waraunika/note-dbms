@@ -1,5 +1,5 @@
-message1="Ch-6: Completed"
-message2="Completed notes of Indexing and B+ tree"
+message1="Ch-7: 7.1 Completed"
+message2="Completed notes of Transaction and ACID Property"
 
 git add .
 git commit -m "$message1" -m "$message2"
