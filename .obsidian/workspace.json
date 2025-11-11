@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Chapter 4 Database Constraints and Normalisation.md",
+                "file": "Chapter 5 Query Processing and Optimisation.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Chapter 4 Database Constraints and Normalisation"
+              "title": "Chapter 5 Query Processing and Optimisation"
             }
           }
         ]
@@ -78,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "276d5c1262042fea",
@@ -173,11 +172,13 @@
   },
   "active": "0418fe2018dbe1f9",
   "lastOpenFiles": [
+    "Chapter 4 Database Constraints and Normalisation.md",
     "Chapter 3 Relational Languages and Relational Model.md",
+    "Chapter 2 Data Models.md",
+    "Chapter 1 Introduction to DBMS.md",
+    "Chapter 5 Query Processing and Optimisation.md",
     "Images/ch3/joins.png",
     "Images/ch3/joins.tmp.png",
-    "Chapter 4 Database Constraints and Normalisation.md",
-    "Chapter 2 Data Models.md",
     "Images/ch1/derived_attribute.png",
     "Images/ch1/c_ellipse.png",
     "Images/ch1/composite_attribute.png",
@@ -185,7 +186,6 @@
     "Images/ch1/c_rectangle.png",
     "Images/ch1/line.png",
     "Images/ch1/diamond.png",
-    "Chapter 1 Introduction to DBMS.md",
     "Images/ch1/models.png",
     "push.sh",
     "Chapter 1 Introduction.md",
@@ -194,7 +194,6 @@
     "Chapter 8 Crash Recovery.md",
     "Chapter 7 Transaction processing and Concurrency Control.md",
     "Chapter 6 File Structure and Hashing.md",
-    "Chapter 5 Query Processing and Optimisation.md",
     "initialise.sh",
     "Images/ch8",
     "Images/ch7",

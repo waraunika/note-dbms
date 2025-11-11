@@ -1,3 +1,4 @@
+(6 Hours / 12 Marks)
 # 4.1 Integrity Constraints and Domain Constraints
 - Rules that ensure the accuracy, consistency, and reliability of data in a relational database.
 - They act as safeguards to prevent invalid data entry and maintain data quality.

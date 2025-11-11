@@ -1,3 +1,4 @@
+(7 Hours / 12 Marks)
 - A Data Model is a collection of conceptual tools for describing:
 	- the structure of data (entities, attributes, relationships).
 	- the operations that can be performed on the data.

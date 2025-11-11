@@ -1,3 +1,4 @@
+(7 Hours / 12 Marks)
 # 3.1 Introduction to SQL
 - SQL which stands for Structured Query Language, is a domain-specific language used in programming and managing relational databases.
 - Standard language for interacting with and managing data in a relational database management system (RDBMS).

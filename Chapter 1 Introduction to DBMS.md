@@ -1,4 +1,5 @@
 # 1.1 Concepts and Applications
+(3 Hours / 4 Marks)
 ## Introduction
 1. Data: Raw facts and figures (e.g., numbers, text, images) that can be processed to produce meaningful information
 2. Database (DB): A shared, integrated and organised collection of logically related data, designed to meet the information needs of an organisation.
