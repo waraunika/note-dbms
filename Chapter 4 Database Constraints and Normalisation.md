@@ -300,4 +300,159 @@ Additional Derived Rules:
 - It will pair every employee with every department creating a huge number of fake and incorrect tuples.
 - This is a lossy join.
 # 4.5 Different Normal Forms
+- Purpose: A systematic process of organising data in a database to:
+	- Eliminate Data Redundancy: Avoid storing the same data in multiple places.
+	- Minimise Data Anomalies: Prevent Insertion, Deletion and Update anomalies.
+	- Ensure Data Integrity and Dependency.
+## A. First Normal Form (1NF)
+- A table is in 1NF if it contains only atomic (indivisible) values and each column contains values of a single type.
+- There should be no repeating groups or array.
+- **Rule**: Every attribute must contain only a single value from its domain.
+#### Example:
+| StudentID | Name  | Courses                 |
+| --------- | ----- | ----------------------- |
+| 101       | Alice | Maths, Physics          |
+| 102       | Bob   | Chemistry               |
+| 103       | Carol | Biology, Maths, English |
+**Violation**: The `Courses` Column contains multiple values (a repeating group).
+**Solution**: Flatten the table so each course is in its own row.
+
+| StudentID | Name  | Course    |
+| --------- | ----- | --------- |
+| 101       | Alice | Maths     |
+| 101       | Alice | Physics   |
+| 102       | Bob   | Chemistry |
+| 103       | Carol | Biology   |
+| 103       | Carol | Maths     |
+| 103       | Carol | English   |
+## B. Second Normal Form (2NF)
+- A table is in 2NF if it is in 1NF and every non-prime attribute is fully functionally dependent on the entire primary key.
+- **Rule**: There should be no Partial Dependency (a non-key attribute depending on only part of a composite).
+#### Example:
+| StudentID | CourseID | CourseName | Instructor | Grade |
+| --------- | -------- | ---------- | ---------- | ----- |
+| 101       | CSE101   | Databases  | Dr. Smith  | A     |
+| 101       | MTH202   | Calculus   | Dr. Jones  | B+    |
+| 102       | CSE101   | Databases  | Dr. Smith  | A-    |
+- Primary Key (Composite): `{StudentID, CourseID}`
+- Functional Dependencies:
+	- `{StudentID, CourseID}` -> `Grade` (Full dependency ✅)
+	- `CourseID` -> `{CourseName, Instructor}` (Partial dependency ❌)
+- **Violation**: `CourseName` and `Instructor` are dependent only on `CourseID`, not on the full key. This causes redundancy and update anomalies
+- **Solution**: Remove the partially dependent attributes into a new table.
+
+| StudentID | CourseID | Grade |
+| --------- | -------- | ----- |
+| 101       | CSE101   | A     |
+| 101       | MTH202   | B+    |
+| 102       | CSE101   | A-    |
+and
+
+| CourseID | CourseName | Instructor |
+| -------- | ---------- | ---------- |
+| CSE101   | Databases  | Dr. Smith  |
+| MTH202   | Caclulus   | Dr. Jones  |
+## C. Third Normal Form (3NF)
+- A table is in 3NF if it is in 2NF and no non-prime attribute is transitively dependent on the primary key.
+- **Rule**: There should be no transitive dependence (a non-key attribute depending on another non-key attribute).
+#### Example:
+| StudentID | Name  | DeptID | DeptName    | DeptBuilding |
+| --------- | ----- | ------ | ----------- | ------------ |
+| 101       | Alice | D01    | Computer    | Tech center  |
+| 102       | Bob   | D01    | Computer    | Tech Center  |
+| 103       | Carol | D02    | Mathematics | Science Hall |
+- Primary Key: `StudentID`
+- Functional Dependencies:
+	- `StudentID` -> `{Name, DeptID}`
+	- `DeptID` -> `{DeptName, DeptBuilding` (Transitive Dependency occurs)
+- **Violation**: `DeptName` and `DeptBuilding` depend on `DeptID`, not directly on `StudentID`. This causes redundancy and update anomalies (if we rename Computer department, we must update multiple rows to avoid data conflict)
+- **Solution**: Remove the transitively dependent attribute into a new table.
+Students table and Departments table
+
+| StudentID | Name  | DeptID |
+| --------- | ----- | ------ |
+| 101       | Alice | D01    |
+| 102       | Bob   | D01    |
+| 103       | Carol | D02    |
+
+| DeptID | DeptName    | DeptBuilding |
+| ------ | ----------- | ------------ |
+| D01    | Computer    | Tech Center  |
+| D02    | Mathematics | Science Hall |
+
+## D. Boyce-Codd Normal Form (BCNF)
+- A table is in BCNF if it is in 3NF and for every non-trivial functional dependency X -> Y, X must be a super key.
+- **Rule**: Every determinant must be a candidate key. BCNF is a stronger version of 3NF.
+#### Example:
+| StudentID | Course    | Instructor   |
+| --------- | --------- | ------------ |
+| 101       | Databases | Dr. Smith    |
+| 101       | Calculus  | Dr. Jones    |
+| 102       | Databases | Dr. Smith    |
+| 103       | Calculus  | Dr. Williams |
+- Assumptions:
+	- A student can enroll in multiple Courses
+	- A Course can be taught by only one instructor
+- Functional Dependencies:
+	- `{StudentID, Course}` -> `Instructor` (The full key determines the instructor)
+	- `Course` -> `Instructor` (Course determines the instructor)
+	- `Instructor` -> `Course` (Instructor determines the course)
+- **Violation**: While the table is in 3NF (no transitive dependencies for non-prime attributes), the FD `Course` -> `Instructor` is a problem. Here, `Course` is a determinant but it is not a super key (it doesn't identify a row by itself). This can still cause anomalies.
+- **Solution**: Decompose based on the problematic FD: `Course` -> `Instruction`. So we have two tables: `StudentInstructor` and `InstructorCourse`
+
+| StudentID | Instructor   |
+| --------- | ------------ |
+| 101       | Dr. Smith    |
+| 101       | Dr. Jones    |
+| 102       | Dr. Smith    |
+| 103       | Dr. Williams |
+
+| Instructor   | Course    |
+| ------------ | --------- |
+| Dr. Smith    | Databases |
+| Dr. Jones    | Calculus  |
+| Dr. Williams | Calculus  |
+- Now, both tables are in BCNF.
+- In `StudentInstructor`, the key is `{StudentID, Instructor}`.
+- In `InstructorCourse`, both `Instructor` and `Course` are candidate keys.
+- Every determinant is a super key.
+## E. Fourth Normal Form (4NF)
+- A table is in 4NF if it is in BCNF and contains no non-trivial multi-valued dependencies (MVD) other than those arising from candidate keys.
+- **Rule**: For every non-trivial MVD X ->> Y, X must be a super key.
+#### Example:
+| Student | Course    | Hobby    |
+| ------- | --------- | -------- |
+| Alice   | Databases | Chess    |
+| Alice   | Databases | Painting |
+| Alice   | Calculus  | Chess    |
+| Alice   | Calculus  | Painting |
+| Bob     | Physics   | Reading  |
+- MVD's:
+	- `Student` ->> `Course`
+	- `Student` ->> `Hobby`
+- A student's courses and hobbies are independent.
+- The table stores all possible combinations, leading to redundancy.
+- **Violation**: The MVD `Student` ->> `Course` exists, but `Student` alone is not a super key (it cannot uniquely identify a row). This independent multi-valued information should be separated.
+- **Solution**: Decompose into two tables, each representing one of the independent multi-valued facts. So we get 2 tables: `StudentCourse` and `StudentHobbies`
+
+
+| Student | Course    |
+| ------- | --------- |
+| Alice   | Databases |
+| Alice   | Calculus  |
+| Bob     | Physics   |
+
+| Student | Hobby    |
+| ------- | -------- |
+| Alice   | Chess    |
+| Alice   | Painting |
+| Bob     | Reading  |
+## F. Summary:
+| Form | Solves                     | Rule Focus                     | Simple Check                                              |
+| ---- | -------------------------- | ------------------------------ | --------------------------------------------------------- |
+| 1NF  | Repeating<br>Groups        | Atomic Values                  | Are all values in each column single?                     |
+| 2NF  | Partial<br>Dependency      | Full Functional Dependency     | Does every non-key field depend on the whole primary key? |
+| 3NF  | Transitive<br>Dependency   | Non-key to Key Dependency only | Does every non-key field depend only on the primary key?  |
+| BCNF | Key-based<br>Dependency    | All Determinants are Keys      | Is every "thing-that-determines" a key?                   |
+| 4NF  | Multi-valued<br>Dependency | Independent MVD's.             | Are independent multi-valued facts in separate tables?    |
 

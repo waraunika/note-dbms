@@ -1,5 +1,5 @@
-message1="Ch-4: 4.4 Finished"
-message2="Created note for Multiple Dependencies and Join Depnedencies"
+message1="Ch-4: Finished"
+message2="Created note for Multiple Normal Forms"
 
 git add .
 git commit -m "$message1" -m "$message2"
