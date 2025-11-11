@@ -104,7 +104,51 @@
 - RAID is commonly used in DBMS to enhance data reliability and performance.
 - Characteristics:
 	- Redundancy: Provides fault tolerance by duplicating data across multiple disks.
-	- Performance: Can
+	- Performance: Can improve read and write speeds by distributing data across several disks.
+	- Scalability: Offers various configurations to balance between performance, redundancy, and capacity.
+	- Reliability: Increases data reliability and availability through different levels of redundancy and capacity.
+- Advantages:
+	- Increased Performance: Striping data across multiple disks can significantly improve read and write speeds.
+	- Data Redundancy: Mirroring and parity provide fault tolerance, reducing the risk of data loss.
+	- Scalability: Allows easy addition of more disks to increase storage capacity.
+	- Improved Reliability: Redundant storage setups increase the overall reliability of the storage system.
+- Disadvantages:
+	- Complexity: RAID setups can be complex to configure and manage.
+	- Cost: Requires multiple disks, which can increase hardware costs.
+	- Rebuild Time: In case of disk failure, rebuilding the array (especially in RAID 5 or RAID 6) can be time-consuming and may impact performance.
+### A. RAID 0 (Stripping):
+- Data is split into blocks and distributed evenly across multiple disks without redundancy.
+- Offers high read and write performance as multiple disks are accessed simultaneously.
+- No fault tolerance, failure of a single disk results in data loss.
+- Suitable for non-critical applications where performance is a priority.
+### B. RAID 1 (Mirroring):
+- Data is duplicated exactly on two or more disks.
+- Read performance is improved (data can be read from any mirror), write performance is the same as a single disk.
+- High fault tolerance; can tolerate the failure of one or more disks without data loss
+- Ideal for critical applications requiring high availability and reliability.
+### C. RAID 5 (Stripping with Parity)
+- Data and parity information are stripped across three or more disks.
+- Parity is distributed across all disks.
+- Good read performance, write performance is reduced due to parity calculations.
+- Can tolerate the failure of a single disk without data loss
+- Suitable for applications requiring a balance between performance, capacity and redundancy
+### D. RAID 6 (Stripping with Double Parity)
+- Similar to RAID 5, but with double parity, allowing for the failure of up to two disks.
+- Read performance is similar to RAID 5, write performance is slower due to additional parity calculations.
+- High fault tolerance, can tolerate the failure of two disks without data loss.
+- Suitable for high-availability systems requiring strong fault tolerance.
+### E. RAID 10 (1+0, Mirroring and Stripping)
+- Combined RAID 1 and RAID 0.
+- Data is mirrored then stripped across multiple disks.
+- Offers high read and write speed performance due to striping, combined with high fault tolerance due to mirroring.
+- Can tolerate the failure of multiple disks (one in each mirrored pair) without data loss.
+- Ideal for applications requiring both high performance and high availability.
+### F. RAID 50 (5 + 0)
+- Combines RAID 5 and RAID 0.
+- Data is stripped across RAID 5 disks.
+### G. RAID 60 (6 + 0)
+- Combines RAID 6 and RAID 0.
+- Data is stripped across RAID 6 arrays
 # 6.3 Remote Backup System
 # 6.4 Hashing Concepts
 # 6.5 Order Indices
