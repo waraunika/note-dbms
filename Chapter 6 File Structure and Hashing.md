@@ -282,4 +282,206 @@ flowchart TD
 ```
 ----
 # 6.5 Order Indices
-# 6.6 B+ Tree index
+## A. Indexing
+- Indexing is a data structure technique that provides a quick lookup mechanism to efficiently locate and access records in a database file without having to scan the entire table.
+- Basic Structure of an index file contains records of the form:
+  `[Search Key | Data Reference]`
+	- Search Key: An attribute (or set of attributes) used to look up records. It can be primary key, candidate key, or even non-key attribute.
+	- Data Reference (Pointer): A pointer to the physical location of the record on disk (e.g., a block ID and offset).
+- Role of an Index:
+	1. Speed up Data Retrieval: The primary role is to make `SELECT` queries with `WHERE` clauses much faster.
+	2. Enforce Uniqueness: Unique indexes enforce the uniqueness of key values (e.g., primary keys).
+	3. Speed up Sorting and Grouping: An index can provide pre-sorted data, making `ORDER BY` and `GROUP BY` operations faster.
+## B. Primary Indexing
+- A primary index is defined on an ordered data file and is built on the primary key of the table.
+- Characteristics:
+	- The data file is physically sorted by the primary key.
+	- Since the primary key is unique, there is a one-to-one relationship between index entries and data records/blocks.
+- Two strategies:
+### B.1 Dense vs Sparse Index
+| Feature                      | Dense Index                                                 | Sparse Index                                                                            |
+| ---------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Concept                      | An index entry for every search-key value in the data file. | Index entries for only some search-key values (typically, the first key of each block). |
+| Entries per Record           | One index entry per record.                                 | One index entry per data block.                                                         |
+| Storage Overhead             | High.                                                       | Low.                                                                                    |
+| Search Speed                 | Faster. Directly finds the record pointer.                  | Slightly slower. May require a sequential scan within the block.                        |
+| Maintenance on Insert/Delete | High overhead (every record change affects index).          | Lower overhead.                                                                         |
+| Use Case                     | Secondary indexes, small tables.                            | Primary indexes on large ordered files.                                                 |
+### B.2 Sparse Index
+##### B.2.a. Searching for record
+1. Find the largest index entry that is less than or equal to the desired search key.
+2. The pointer in that index entry leads to the beginning of a data block.
+3. Perform a sequential scan within that specific data block to find the exact record.
+##### B.2.b. Advantages
+- Reduced Storage: Significantly fewer entries than a dense index.
+- Reduced Maintenance: Fewer entries to update on insertions and deletions.
+##### B.2.c Figure
+![[example_sparse.png | 600]]
+### B.3 Examples
+Data File (Sorted by `StudentID`):
+```txt
+Block 1: [101, Alice], [102, Bob]
+Block 2: [105, Carol], [109, David]
+Block 3: [112, Eve], [115, Frank]
+```
+
+Dense Index:
+```txt
+Index File:
+101 -> Pointer to record 101
+102 -> Pointer to record 102
+105 -> Pointer to record 105
+109 -> Pointer to record 109
+112 -> Pointer to record 112
+115 -> Pointer to record 115
+```
+
+Figure for Dense Index:
+![[example_dense.png | 600]]
+Sparse Index:
+```txt
+Index File:
+101 -> Pointer to Block 1
+105 -> Pointer to Block 2
+112 -> Pointer to Block 3
+```
+## C. Clustering Index
+- A clustering index defines the physical sorted order of the data records in the file itself.
+- The data file is ordered on a non-key attribute, called the clustering key.
+- Characteristics:
+	- There can be only one clustered index per table because the data can only be physically sorted in one order.
+	- The data records are stored in sorted order of the clustering key.
+	- It is inherently a sparse index; there is one index entry per distinct value of the clustering key, which points to the first data block containing that value.
+- Example:
+	- An `Employee` table sorted by `Dept_no` (a non-unique attribute).
+	- Data File: All employees from Dept 10 are stored together, followed by all from Dept 20, etc.
+	- Clustering index:
+```txt
+Index File:
+10 -> Pointer to first block of Dept 10 records
+20 -> Pointer to first block of Dept 20 records
+30 -> Pointer to first block of Dept 30 records
+```
+## D. Secondary Index
+- A secondary index is an index or any non-ordering attribute of the file.
+- The data file is not physically sorted by this attribute.
+- Characteristics:
+	- There can be many secondary indexes on a single table.
+	- The data file is in an arbitrary order (e.g., heap or sorted by a different key).
+	- It is always a dense index because there is no predictable grouping of records for a non-ordering field. Each distinct value needs its own entry.
+	- Because the key might not be unique, an index entry points to a bucket (a collection of pointers) that contains the addresses of all records with that specific key value.
+- Figure:
+  ![[example_secondary.png | 600]]
+- Example: A `Students` table physically sorted by `StudentID`. We create a secondary index on `Major`.
+```txt
+Index File:
+Biology -> [Ptr to record 5, Ptr to record 12, ...]
+CS -> [Ptr to record 3, Ptr to record 8, ...]
+Math -> [Ptr to record 1, Ptr to record 7, ...]
+```
+#### D.1 Comparison
+Between Secondary Index and Multilevel index
+- Secondary Index: 
+	- Refers to the purpose of the index (non-primary, non-clustering).
+	- It can be implemented with a single-level dense index.
+- Multilevel index:
+	- Refers to the structure of the index (like a B+ Tree).
+	- It is a technique to make large primary or secondary indexes more efficient by building a hierarchical tree of indexes.
+	- A large secondary index is often implemented as multilevel index.
+## E. Index Sequential File
+- An Index Sequential File is a classic file organisation method that combines both sequential and direct access.
+- Structure:
+	1. Sequential File: The data is stored in a file that is physically sorted by a key (e.g., `StudentID`).
+	2. Index: A sparse index is built on top of this sorted file to provide fast direct access to blocks of records.
+- This is essentially the organisation created by a Primary Index.
+## F. Ordered Index vs. Hash Index
+| Feature     | Ordered Index                                    | Hash Index                                  |
+| ----------- | ------------------------------------------------ | ------------------------------------------- |
+| Basis       | Keys are stored in sorted order.                 | Keys are distributed using a hash function. |
+| Best For    | Range Queries (`BETWEEN`, `<`, `>`, `ORDER BY`). | Exact-Match Queries (`=`).                  |
+| Performance | Retrieving a range of values is efficient        | Retrieving a range requires a fulls scan.   |
+| Example     | `SELECT * FROM students WHERE grade > 80;`       | `SELECT * FROM students WHERE id = 101;`    |
+| Common Type | B+ Tree.                                         | Extendible Hashing                          |
+## G. SQL syntax to create an Index
+```sql
+-- Basic Syntax:
+CREATE [UNIQUE] INDEX <index_name>
+ON <table_name> (<column_name> [ASC|DESC], ...);
+
+-- Create a simple secondary index
+CREATE [UNIQUE] INDEX <index_name>
+ON <table_name> (<column_name> [ASC|DESC], ...);
+
+-- Create a unique index (like a primary key index)
+CREATE UNIQUE INDEX idx_employee_id
+ON Employee (empid);
+
+-- composite index (on multiple columns)
+CREATE INDEX idx_employee_dept_salary
+ON Employee (deptid, salary);
+```
+----
+# 6.6 B+ Tree Index
+
+### A. Concept
+- B+ Tree is an advanced, self-balancing tree data structure that maintains sorted data and allows for efficient insertion, deletion and search operations.
+- Primary use: it is the standard index structure in almost all modern Relational DBMS and file systems.
+- Purpose: To provide highly efficient data retrieval while minimising expensive disk I/O operations, especially for data that doesn't fit in main memory.
+### B. Indexing with B+ Trees
+- B+ Trees are specifically designed to overcome the limitations of other data structures in a disk-based environment.
+1. Minimised Disk I/O (main reason):
+	- Disk reads are slow, while memory access is fast.
+	- The B+ tree is designed so that each node corresponds to a full disk block
+	- A high branching factor (order `m`) means the tree is very short and fat, not tall and skinny. This drastically reduces the number of disk accesses needed to find any record, often requiring only 3 or 4 reads to find a record in a table of millions.
+2. Efficient Range and Sequential Access:
+	- All data pointers are stored in the leaf nodes, which are linked together in a doubly linked list.
+	- This makes queries like `BETWEEN, <, >, ORDER BY` extremely efficient. The database can find the starting point and then simply traverse the linked list to get all subsequent values without jumping back up the tree.
+3. Consistent Performance:
+	- The tree is always balanced i.e the path from the root to any leaf node is always the same length. 
+	- This guarantees predictable O(log(n)) performance for search, insert and delete operations, preventing performance degradation.
+4. Structural Stability:
+	- The tree grows from the root, not the leaves. This provides a stable and consistent access path for all operations.
+### C. Characteristics and Node Structure
+1. Key Properties (for a tree of order `m`):
+	- Balanced: All leaf nodes are at the same depth.
+	- Order (`m`): Defines the maximum number of children a node can have.
+	- Internal Node Rules:
+		- Can have up to `m` children (pointers).
+		- Must have at least `m/2` children (except the root).
+		- If it has `k` children, it contains `k-1` search keys.
+	- Leaf Node Rules:
+		- Can contain between `m/2` and `m` key-value pairs.
+		- All leaf nodes are linked together in a sequential, doubly-linked list
+2. Node Structure:
+	1. Internal Node
+		- used to route the search to the correct leaf node.
+		- it contains search keys and pointers to child nodes
+		- Rule: for a node with `k` pointers (`P1` to `Pk`):
+			- All keys in the subtree pointed by `P1` are less than `K1`.
+			- All keys in the subtree pointed by `P2` are between `K1` and `K2`.
+			- All keys in the subtree  pointed by `Pk` are greater than or equal to K$_{k-1}$.
+	2. Leaf Node
+		- used to store the actual data or pointers to the actual data records.
+		- it contains search keys and data pointers.
+		- Rule: The `P_next` pointer points to the next leaf node, forming the crucial linked list for range queries.
+### D. Operations
+- Search
+	1. Start at the root.
+	2. At each internal node, perform a binary search to find the range where the key lies and follow the corresponding pointer.
+	3. Repeat until you reach a leaf node
+	4. Scan the leaf node to find the exact key and its data pointer
+- Insertion
+	1. Find the correct leaf node.
+	2. Insert the new key in sorted order.
+	3. If the leaf overflows (> m-1 keys), split into two. Promote the middle key (a copy) to the parent internal node.
+	4. If the parent internal node overflows, repeat the split process. This may continue all the way to the root, increasing the tree's height.
+- Deletion
+	1. Find and remove the key form the leaf node.
+	2. If the leaf underflows (< m/2 keys):
+		1. Burrow: If a sibling has extra keys, burrow one and update the parent's key.
+		2. Merge: If not, merge with a sibling and remove the corresponding key from the parent.
+	3. This may cause a cascade of merges up the tree, potentially decreasing the tree's height.
+### E. Example:
+![[example_b.png]]
+
+[[Chapter 7 Transaction processing and Concurrency Control]]
