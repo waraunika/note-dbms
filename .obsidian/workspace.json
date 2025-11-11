@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Chapter 5 Query Processing and Optimisation.md",
+                "file": "Chapter 6 File Structure and Hashing.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Chapter 5 Query Processing and Optimisation"
+              "title": "Chapter 6 File Structure and Hashing"
             }
           }
         ]
@@ -143,13 +143,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Chapter 5 Query Processing and Optimisation.md",
+                "file": "Chapter 6 File Structure and Hashing.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Chapter 5 Query Processing and Optimisation"
+              "title": "Outline of Chapter 6 File Structure and Hashing"
             }
           }
         ],
@@ -173,11 +173,11 @@
   },
   "active": "0418fe2018dbe1f9",
   "lastOpenFiles": [
+    "Chapter 5 Query Processing and Optimisation.md",
     "Chapter 4 Database Constraints and Normalisation.md",
     "Chapter 3 Relational Languages and Relational Model.md",
     "Chapter 2 Data Models.md",
     "Chapter 1 Introduction to DBMS.md",
-    "Chapter 5 Query Processing and Optimisation.md",
     "Images/ch3/joins.png",
     "Images/ch3/joins.tmp.png",
     "Images/ch1/derived_attribute.png",
