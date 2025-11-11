@@ -165,6 +165,121 @@
 - Figure:
   ![[Remote_backup.png | 600]]
 # 6.4 Hashing Concepts
-- Technique used 
+### A. Concepts
+- Technique used in DBMS to quickly locate a data record given its search key. 
+- This method transforms a search key into an address in the hash table using a hash function. Hashing is highly efficient for queries that involve exact matches
+- widely used in applications such as indexing, cache retrieval and hash joins in databases.
+- the technique utilises an auxiliary hash table to store the data records using a hash function.
+### B. Terminology:
+1. Hash Function: mathematical algorithm that converts an input/key into a fixed-size string of bytes.
+2. Hash code: output of hash function, used as an index into an array (hash table).
+3. Hash Table: array-like data structure where data is stored.
+4. Buckets: Buckets are the individual storage locations within a hash table where records are stored.
+5. Collisions: When two keys hash to same bucket, a collision occurs.
+### C. Types of Hashing Functions
+#### C.1 Direct Hashing
+- Direct hashing assigns a unique hash value to each key without any computation.
+- This method is feasible when the key space is small and manageable.
+- Take hashing function as h(k) = k
+- Example:
+	- If keys are in the range 0 to 99, each key directly maps to an array index.
+#### C.2 Modulo Division Hashing
+- Modulo division hashing uses the remainder of the key divided by the table size as the hash value.
+- Hash function: h(k) = k mod n where k is the key and n is the number of buckets.
+- Example:
+	- Key = 123, Table size = 10
+	- Hash value = 123 % 10 = 3
+#### C.3 Mid-Square Hashing
+- involves squaring the key and extracting the middle part of the result as the hash value.
+- Example:
+	- Key = 56
+	- Squared value = 3136
+	- Extract middle digits (13) as the hash value.
+#### C.4 Folding Hashing
+- Folding hashing divides the key into equal parts, adds these parts together and uses the result modulo the table size as the hash value.
+- Steps:
+	- Divide the key into equal parts
+	- Add the parts together
+	- Apply modulo operation with table size
+- Example:
+	- Key = 987654
+	- Divide into parts: 98, 76, 54
+	- Sum = 98 + 76 + 54 = 228
+	- Hash value = 228 % 10 = 8
+### D. Types of Hashing
+#### D.1 Static Hashing
+- technique in which a fixed-size hash table is used to map keys to data records using a hash function.
+- The hash table size and structure remain constant, irrespective of the number of records stored.
+- This means that the number of buckets or slots available for data storage does not change dynamically, even if the database grows or shrinks over time.
+- Working:
+	- Initialisation:
+		- Determine the number of buckets (let's say N).
+		- Choose a hash function that maps keys to an index between 0 and N-1.
+	- Insertion:
+		- Apply the hash function to the key to get a bucket index.
+		- Place the record in the corresponding bucket.
+		- If the bucket already contains records, handle the collision using the chosen method (e.g., chaining)
+	- Search:
+		- Apply the hash function to the key to get the bucket index.
+		- Search within the bucket for the desired record.
+		- This search can be linear or use more sophisticated structures like binary search if the bucket is kept sorted.
+	- Deletion:
+		- Apply the hash function to find the bucket.
+		- Search the record within the bucket and remove it.
+		- Adjust any linked list or probing structures accordingly.
+- Advantages:
+	- Simplicity: Easy to implement and understand.
+	- Performance: Provides O(1) average time complexity for search, insertion, and deletion operations in ideal conditions.
+	- Predictability: Since the number of buckets is fixed, memory allocation can be planned and managed efficiently.
+- Disadvantages:
+	- Fixed Size: The number of buckets is fixed, which can lead to inefficiencies. If the number of records grows significantly, many records will end up in the same bucket, leading to increased search times (collisions)
+	- Memory Waste: If the number of records is much smaller than the number of buckets, a lot of space may be wasted.
+	- Rehashing Complexity: If the hash table becomes too full, rehashing (creating a new, larger hash table and re-inserting all records) can be complex and time-consuming.
+#### D.2 Dynamic Hashing
+- In static hashing, the hash function h(k) mod N maps keys to N buckets.
+- Limitations:
+	1. Fixed size: the number of buckets N is fixed. If the file grows, buckets become overloaded, leading to long overflow chains and performance degradation.
+	2. Shrinking Datasets: If data is deleted, space is wasted in underful buckets.
+	3. Costly Reorganisation: To change the size of the hash table, a complete rehashing of the entire file is required, which is a very expensive operation.
+- Solution: Dynamic Hashing
+	- the technique allows the hash table to grow and shrink dynamically as records are inserted and deleted.
+	- The goal is to maintain efficient access time (O(1) on average) without requiring massive, one-time reorganisation.
+	- Main Idea: the hash function is adjusted dynamically to accommodate more buckets. Only a small portion of the table is reorganised during an expansion
+#### D.3 Extendible Hashing
+- Popular dynamic hashing technique.
+- Uses directory of pointers to buckets to manage growth gracefully.
+- The directory doubles in size when necessary, but only one bucket is split at a time.
+- Key Components:
+	- Directory:
+		- An array of pointers to buckets.
+		- Has a Global Depth (G): The number of bits used to determine an entry in the directory. The directory has 2$^G$ entries.
+	- Buckets:
+		- Data pages that store the actual records.
+		- Each bucket has a Local Depth (L): The number of bits from the hash value that are actually used to determine membership in this specific bucket. L <= G.
+- Working:
+	1. Hashing:
+		- For a key K, compute a uniform hash value, represented as a bit string (e.g., h(K) = 101010010...)
+	2. Directory Lookup:
+		- Use the first G bits of the hash value as an index into the directory.
+		- The directory entry at that index contains a pointer to the bucket where the record should be stored.
+	3. Insertion and Handling Overflow
+		- When inserting a record into a full bucket, an overflow occurs. The system follows this logic
+```mermaid
+flowchart TD
+    A[Insert Record into Bucket] --> B{Is Bucket Full?}
+    B -- No --> C[Insert Success]
+    B -- Yes --> D{Is <br>Local Depth L < <br>Global Depth G?}
+    
+    D -- No, L = G --> E[Double Directory<br>Increment Global Depth G++]
+    E --> F[Split Bucket]
+    
+    D -- Yes, L < G --> F[Split Bucket]
+    
+    F --> G[Increment Local Depth L++<br>for split buckets]
+    G --> H[Rehash records from<br>old bucket to the two new buckets]
+    H --> I[Update Directory Pointers]
+    I --> C
+```
+----
 # 6.5 Order Indices
 # 6.6 B+ Tree index
