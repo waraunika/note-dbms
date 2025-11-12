@@ -208,14 +208,124 @@ Step 2: Also a cycle: T1 -> T3 -> T1, so not conflict serialisable.
 
 ----
 # 7.3 Lock based Protocols
-1. Describe granularity of locking for concurrency control.
-2. Difference between fine granularity and coarse granularity in multiple granularity locking protocol.
-3. Explain two phase locking protocol for concurrency control with example and its limitations.
-4. How does strict two phase locking protocol improve the two phase locking protocol?
-5. Explain the different types of locks used for concurrency control. Draw the lock compatibility matrix.
-6. Explain how graph based protocol maintains concurrent execution of transactions.
+### A. Concept
+- A lock-based protocol is a mechanism that controls concurrent access to data items by requiring transactions to acquire locks before performing operations.
+- This ensures serialisability and prevents conflicts.
+- Primary goal is to maintain data consistency and transaction isolation in a multi-user database environment.
+### B. Types of Locks:
+1. Shared Lock (S-Lock or Read Lock)
+	- For **reading** a data item.
+	- Multiple transactions can hold a shared lock on the same data item simultaneously.
+	- A shared lock is compatible with only other shared locks.
+2. Exclusive Lock (X-Lock or Write Lock)
+	- For **writing/modifying** a data item.
+	- Only one transaction can hold an exclusive lock on a data item at a time.
+	- It excludes all other locks.
+	- Exclusive lock is incompatible with all other locks.
+3. Lock Compatibility Matrix:
+- This matrix determines if a requested lock can be granted based on locks already held by other transactions.
+
+| Held\Requested | Shared (S) | Exclusive (X) |
+| -------------- | ---------- | ------------- |
+| S              | Yes        | No            |
+| X              | No         | No            |
+### C. Two-Phase Locking (2PL) Protocol
+- This is the fundamental protocol that guarantees conflict serialisability.
+- Two phases:
+	1. Growing Phase:
+		- A transaction can acquire locks but cannot release any lock.
+		- The transaction accumulates all the locks it needs.
+	2. Shrinking Phase:
+		- A transaction can release locks but cannot acquire any new locks.
+		- Once a single lock is released, the shrinking phase begins.
+- Example of 2PL:
+	- Consider the transactions:
+	  T1: Transfer $100 from A to B: `R(A), W(A), R(B), W(B)`
+	- A valid 2PL schedule for T1 could be:
+		- Growing Phase: `Lock-X(A)` -> `R(A)` -> `W(A)` -> `Lock-X(B)`
+		- Shrinking Phase: `Unlock(A)` -> `R(B)` -> `W(B)` -> `Unlock(B)`
+- Limitations of Basic 2PL:
+	- Cascading Rollbacks:
+		- If T1 unlocks A and then aborts, T2 (which read the unlocked, uncommitted value of A from T1) becomes dependent on an aborted transaction and must also be rolled back.
+		- This cascade effect can continue.
+	- Deadlocks:
+		- 2PL can lead to deadlocks where transactions wait indefinitely for each other's locks
+		- example:
+			- T1 holds Lock-X(A) and needs Lock-X(B), while 
+			- T2 holds Lock-X(B) and needs Lock-X(A).
+### D. Strict Two-Phase Locking (Strict 2PL)
+- This is the protocol most widely used in practice, because it overcomes the major limitations of basic 2PL.
+- Improvement over Basic 2 PL:
+	- In strict 2PL, a transaction holds all its exclusive locks until it commits or aborts.
+	- Shared locks can be released earlier in some implementations, but the key is that exclusive locks are held until commit.
+- How it solves the problem:
+	- Prevents Cascading Rollbacks: Since no other transaction can read an uncommitted data item (because of exclusive lock), no transaction becomes dependent on an uncommitted change.
+	- If T1 aborts, no other transaction has seen its dirty data.
+- Trade off: It results in lower concurrency that basic 2PL because locks are held for a longer duration.
+### E. Other Lock-Based Protocols
+1. Simplistic Lock Protocol
+	- Exclusive Lock Only.
+		- Transactions acquire locks (write locks) on data items they intend to modify.
+		- Once a transaction holds an exclusive lock on a data item, no other transaction can read or write to that data item until the lock is released.
+	- Lock Acquisition
+		- A transaction requests an exclusive lock before it performs any write operation (such as an update or delete) on a data item.
+		- If another transaction already holds the lock on that data item, the requesting transaction must wait until the lock is released.
+	- Lock Release:
+		- The exclusive lock is released once the transaction commits or aborts.
+		- Upon release, other transactions waiting to acquire the lock can proceed with their operations on the data item.
+2. Pre-claiming Lock Protocol
+	- Transaction Initiation:
+		- Before a transaction begins executing, it pre-claims or pre-acquires locks on all data items it may need during its execution.
+		- This is typically done during the transaction's initialisation phase.
+	- Lock Acquisition:
+		- Instead of acquiring locks on demand, the transaction acquires all necessary locks upfront.
+		- Transactions may acquire shared locks (for reading) or exclusive locks (for writing) depending on their operations
+	- Execution Phase:
+		- Once a transaction has pre-claimed all necessary locks, it proceeds with its operations without needing to acquire additional locks during its execution phase.
+		- This reduces the overhead of lock management during the critical path of transaction processing.
+	- Lock release:
+		- Locks are released in the usual manner after the transaction completes its execution, either by committing or aborting.
+		- This ensures that other transactions can subsequently access the data items
+### F. Granularity of Locking
+Lock granularity refers the the size of the data item chosen as the full unit of protection.
+1. **Coarse Granularity**:
+	- Locking large objects (e.g., an entire table or database).
+	- Adv: Low overhead (fewer locks to manage).
+	- Disadv: Low concurrency. Locking an entire table blocks all other transactions accessing any part of that table.
+2. **Fine Granularity**
+	- Locking small objects (e.g., a single row or attribute within a table).
+	- Adv: High concurrency. Multiple transactions can work on different rows of the same table simultaneously.
+	- Disadv: High overhead (many more locks to manage)
+3. **Multiple Granularity Locking**
+	- A hierarchical protocol that allows transactions to lock data items at different levels of the hierarchy (e.g., Database -> Table -> Page -> Row).
+	- Working: It uses intention locks.
+		- Intention-Shared (IS): indicates intent to read at a finer granularity (e.g., setting IS on a table before locking a row in S-mode)
+		- Shared (S): indicates that the table is locked in shared mode.
+		- Intention-Exclusive (IX): indicates intent to write at a finer granularity.
+		- Shared+Intention-Exclusive (SIX): The table is locked in shared mode, but the exclusive locks are being taken on some of its rows (common in queries that read the whole table but update a few rows).
+###### Compatibility Matrix for Multiple Granularity
+| Held↓\ Requested -> | IS  | IX  | S   | SIX | X   |
+| ------------------- | --- | --- | --- | --- | --- |
+| IS                  | ✅   | ✅   | ✅   | ✅   | ❌   |
+| IX                  | ✅   | ✅   | ❌   | ❌   | ❌   |
+| S                   | ✅   | ❌   | ✅   | ❌   | ❌   |
+| SIX                 | ✅   | ❌   | ❌   | ❌   | ❌   |
+| X                   | ❌   | ❌   | ❌   | ❌   | ❌   |
+### G. Graph-Based Protocol
+- A concurrency control protocol that imposes a partial order on the set of all data items using a directed acyclic graph (DAG).
+- Working:
+	- Data Item Ordering: All data items are organised in a DAG structure (e.g., A->B->C).
+	- Locking Rule: A transaction can lock a data item, only after it has locked all its predecessors in the graph. For example, to lock C, a transaction must first lock A and then B.
+	- Unlocking Rule: A transaction can unlock any data item at any time. However, after unlocking a data item, it cannot lock any new data item, similar to 2PL's shrinking phase.
+- Adv: Deadlock-free. The ordering prevents the circular wait condition necessary for a deadlock.
+- Disadv: Requires pre-knowledge of the data access pattern, which is not always available.
+- Example: If the graph is A -> B -> C, a transaction must lock in the order A, B, C. This prevents a scenario where T1 holds B and waits for C, while T2 holds C and waits for B.
 ----
 # 7.4 Deadlock Handling and Prevention
+### A. Concept
+- Deadlocking handling in DBMS are critical to ensure smooth operation and consistency of databases, especially in multi user environment.
+- Deadlock occur when two or more transactions are waiting indefinitely for resources locked by each other.
+
 1. How deadlocks arise in transaction processing?
 2. Explain wait & die scheme and wound-wait for deadlock prevention
 3. Explain deadlock prevention strategies.

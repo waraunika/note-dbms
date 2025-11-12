@@ -1,5 +1,5 @@
-message1="Ch-7: 7.2 Completed"
-message2="Completed notes of Serialisability Concepts and all"
+message1="Ch-7: 7.3 Completed"
+message2="Completed notes of Lock based protocols"
 
 git add .
 git commit -m "$message1" -m "$message2"
