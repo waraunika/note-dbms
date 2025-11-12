@@ -323,9 +323,85 @@ Lock granularity refers the the size of the data item chosen as the full unit of
 ----
 # 7.4 Deadlock Handling and Prevention
 ### A. Concept
-- Deadlocking handling in DBMS are critical to ensure smooth operation and consistency of databases, especially in multi user environment.
-- Deadlock occur when two or more transactions are waiting indefinitely for resources locked by each other.
+- A deadlock is a situation where two or more transactions are unable to proceed because each is waiting for a resource that another transaction in the set holds.
+- Visual Representation (cycle indicates a deadlock):
+```mermaid
+flowchart LR
+    T1[Transaction T1] -->|waits for resource held by| T2[Transaction T2]
+    T2 -->|waits for resource held by| T1
+```
+### B. Characteristics (Necessary Conditions)
+- **Mutual exclusion**: 
+	- At least one resource must be held in a non-shareable (exclusive) mode.
+	- Example: An Exclusive lock on a data item.
+- **Hold and Wait**: 
+	- A transaction must be holding at least one resource and waiting to acquire additional resources that are currently held by other transactions.
+- **No preemption**: 
+	- Resources cannot be forcibly taken away from a transaction.
+	- A resource can only be released voluntarily by the transaction holding it.
+- **Circular Wait**: 
+	- A set of waiting transactions must exist such that each transaction is waiting for a resource held by the next transaction in the circle: `T1 -> T2 -> ... Tn -> T1`.
+### C. Deadlock Prevention
+These protocols ensure that at least one of the four necessary conditions cannot hold, making deadlocks impossible.
+1. Eliminate "Hold-and-wait" (Pre-claiming)
+	- A transaction must lock all data items it will need at the beginning, before it starts execution.
+	- This however, reduces concurrency and is often impractical as it maybe hard to know all required data items in advance.
+2. Allow Preemption
+	- This strategy uses transaction timestamps (TS) to decide which transaction should be aborted when a conflict occurs.
+	- **Wait-Die Scheme** (Older waits, Younger dies)
+		- Rule: if `T1` requests a lock held by `T2`:
+			- If TS(`T1`) < TS(`T2`) i.e. `T1` is older than `T2`, then `T1` waits.
+			- If TS(`T1`) > TS(`T2`) i.e. `T1` is younger than `T2`, then `T1` is aborted ("dies").
+		- Logic: 
+			- An older transaction is allowed to wait for a younger one.
+			- A younger transaction is never allowed to wait for an older one (it is killed instead), preventing a cycle where a young transaction holds a resource needed by an old one
+		- Example:
+			- `T1` (TS=10) holds Lock-X(A).
+			- `T2` (TS=20) holds Lock-X(A).
+			- Since `T2` is younger, it is aborted (it "dies").
+	- **Wound-Wait scheme** (Older wounds, younger waits)
+		- Rule: if `T1` requests a lock held by `T2`:
+			- If TS(`T1`) < TS(`T2`) i.e. `T1` is older than `T2`, then `T2` is aborted (`T1` wounds `T2`).
+			- If TS(`T1`) ? TS(`T2`) i.e. `T1` is younger than `T2`, then `T1` waits.
+		- Logic:
+			- An older transaction can preempt (forcefully abort) a younger one.
+			- A younger transaction must wait for an older one.
+			- This prevents circular wait.
+		- Example:
+			- `T1` (TS=10) holds Lock-X(A).
+			- `T2` (TS=20) requests Lock-X(A).
+			- Since `T2` is younger, it waits.
+			- Now, if `T1` requests a lock held by `T2`, `T1` is older, so it would "wound" `T2`, causing `T2` to be aborted and releasing its locks for `T1`.
+	- Comparison:
 
-1. How deadlocks arise in transaction processing?
-2. Explain wait & die scheme and wound-wait for deadlock prevention
-3. Explain deadlock prevention strategies.
+| Feature                       | Wait-Die                                                                | Wound-Wait                                                             |
+| ----------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Action on Older Transaction   | Waits for younger                                                       | Wounds (aborts) younger                                                |
+| Action on Younger Transaction | Aborted                                                                 | Waits for older                                                        |
+| Number of Rollbacks           | Potentially more (young transactions keep dying)                        | Potentially fewer (young transactions simply wait)                     |
+| Starvation                    | A young transaction may repeatedly die if it conflicts with older ones. | An old transaction can't starve, as it will always wound younger ones. |
+### D. Deadlock Detection
+Method: **Wait-For Graph Analysis**:
+- The system maintains a directed graph where each nodes are transactions.
+- An edge T1 -> T2 exists if T1 is waiting for a resource held by T2.
+- A deadlock exists if and only if the wait-for graph contains a cycle.
+- The system runs a cycle-detecting algorithm periodically to check for deadlocks.
+### E. Deadlock Recovery
+1. Transaction Rollback:
+	- Abort one or more transaction to break the deadlock cycle.
+	- The choice of transaction to abort can be based on criteria such as transaction age, the number of resources held, or transaction's priority.
+2. Cascading Rollback:
+	- Abort a set of transactions and undo all their operations until the system reaches a consistent state.
+	- This can cause other transactions to abort, leading to a cascading effect.
+	- How to select victims of abortion of transaction:
+		- Youngest Transaction: The one that started most recently.
+		- Transaction with Least work: the one that has performed the fewest updates (minimises rollback cost).
+		- Transaction Holding fewest resources.
+3. Resource Preemption:
+	- Temporarily revoke some resources from transactions and assign them to other transactions to resolve the deadlock.
+### F. Deadlock Avoidance
+These methods require additional information about transactions to dynamically decide whether to allow transactions to proceed or not.
+- Wait-For Graph: Construct a wait-for graph where nodes represent transactions and directed edges represent waiting dependencies. Regularly check for cycles in this graph; a cycle indicates a deadlock.
+- Banker's Algorithm: Similar to DIjkstra's Algorithm, Banker's Algorithm is used in operating systems. It ensures that a system remains in a safe state by checking the resource allocation graph to determine if resource allocation will lead to a safe state.
+
+[[Chapter 8 Crash Recovery]]
