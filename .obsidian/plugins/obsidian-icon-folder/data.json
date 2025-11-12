@@ -6,11 +6,11 @@
     "emojiStyle": "native",
     "iconColor": null,
     "recentlyUsedIcons": [
+      "7️⃣",
       "6️⃣",
       "5️⃣",
       "4️⃣",
-      "3️⃣",
-      "2️⃣"
+      "3️⃣"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -39,5 +39,6 @@
   "Chapter 3 Relational Languages and Relational Model.md": "3️⃣",
   "Chapter 4 Database Constraints and Normalisation.md": "4️⃣",
   "Chapter 5 Query Processing and Optimisation.md": "5️⃣",
-  "Chapter 6 File Structure and Hashing.md": "6️⃣"
+  "Chapter 6 File Structure and Hashing.md": "6️⃣",
+  "Chapter 7 Transaction processing and Concurrency Control.md": "7️⃣"
 }
